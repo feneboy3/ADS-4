@@ -1,5 +1,4 @@
 // Copyright 2021 NNTU-CS
-
 int countPairs1(int *arr, int len, int value) {
     int total = 0;
     for (int i = 0; i < len; ++i) {
@@ -27,7 +26,8 @@ int countPairs2(int *arr, int len, int value) {
             } else {
                 int leftVal = arr[start];
                 int rightVal = arr[end];
-                int leftCount = 0, rightCount = 0;
+                int leftCount = 0;
+                int rightCount = 0;
 
                 while (start <= end && arr[start] == leftVal) {
                     leftCount++;
@@ -90,7 +90,8 @@ int countPairs3(int *arr, int len, int value) {
         int currentVal = arr[index];
         int countCurrent = 1;
 
-        while (index + countCurrent < len && arr[index + countCurrent] == currentVal) {
+        while (index + countCurrent < len &&
+               arr[index + countCurrent] == currentVal) {
             countCurrent++;
         }
 
@@ -99,7 +100,8 @@ int countPairs3(int *arr, int len, int value) {
         if (target == currentVal) {
             total += countCurrent * (countCurrent - 1) / 2;
         } else if (target > currentVal) {
-            int first = findFirstOccurrence(arr, index + countCurrent, len - 1, target);
+            int first = findFirstOccurrence(arr, index + countCurrent,
+                                            len - 1, target);
             if (first != -1) {
                 int last = findLastOccurrence(arr, first, len - 1, target);
                 int countTarget = last - first + 1;
