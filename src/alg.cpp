@@ -34,12 +34,12 @@ int countPairs2(int *arr, int len, int value) {
             int lcount = 0;
             int rcount = 0;
 
-            while (left < len && arr[left] == lval) {
+            while (arr[left] == lval) {
                 lcount++;
                 left++;
             }
 
-            while (right >= 0 && arr[right] == rval) {
+            while (arr[right] == rval) {
                 rcount++;
                 right--;
             }
@@ -56,50 +56,23 @@ int countPairs2(int *arr, int len, int value) {
 }
 
 int countPairs3(int *arr, int len, int value) {
+    int freq[101] = {0};
+
+    for (int i = 0; i < len; i++) {
+        freq[arr[i]]++;
+    }
+
     int count = 0;
 
-    for (int i = 0; i < len; ) {
-        int x = arr[i];
-        int countX = 0;
+    for (int x = 0; x <= 50; x++) {
+        int y = value - x;
 
-        while (i < len && arr[i] == x) {
-            countX++;
-            i++;
-        }
+        if (y < 0 || y > 100) continue;
 
-        int target = value - x;
-
-        int left = i;
-        int right = len - 1;
-        int first = -1;
-
-        while (left <= right) {
-            int mid = (left + right) / 2;
-
-            if (arr[mid] == target) {
-                first = mid;
-                right = mid - 1;
-            } else if (arr[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        if (first != -1) {
-            int countY = 0;
-            int idx = first;
-
-            while (idx < len && arr[idx] == target) {
-                countY++;
-                idx++;
-            }
-
-            if (x < target) {
-                count += countX * countY;
-            } else if (x == target) {
-                count += countX * (countX - 1) / 2;
-            }
+        if (x < y) {
+            count += freq[x] * freq[y];
+        } else if (x == y) {
+            count += freq[x] * (freq[x] - 1) / 2;
         }
     }
 
