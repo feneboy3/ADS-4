@@ -55,47 +55,24 @@ int countPairs2(int *arr, int len, int value) {
     return count;
 }
 
-// бинарный поиск первого >= target
-int lowerBound(int *arr, int left, int right, int target) {
-    int res = right + 1;
-    while (left <= right) {
-        int mid = (left + right) / 2;
-        if (arr[mid] >= target) {
-            res = mid;
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
-    }
-    return res;
-}
-
-// бинарный поиск первого > target
-int upperBound(int *arr, int left, int right, int target) {
-    int res = right + 1;
-    while (left <= right) {
-        int mid = (left + right) / 2;
-        if (arr[mid] > target) {
-            res = mid;
-            right = mid - 1;
-        } else {
-            left = mid + 1;
-        }
-    }
-    return res;
-}
-
 int countPairs3(int *arr, int len, int value) {
-    int count = 0;
+    int freq[101] = {0};
 
     for (int i = 0; i < len; i++) {
-        int target = value - arr[i];
+        freq[arr[i]]++;
+    }
 
-        int l = lowerBound(arr, i + 1, len - 1, target);
-        int r = upperBound(arr, i + 1, len - 1, target);
+    int count = 0;
 
-        if (l < len && arr[l] == target) {
-            count += (r - l);
+    for (int x = 0; x <= 100; x++) {
+        int y = value - x;
+
+        if (y < 0 || y > 100) continue;
+
+        if (x < y) {
+            count += freq[x] * freq[y];
+        } else if (x == y) {
+            count += freq[x] * (freq[x] - 1) / 2;
         }
     }
 
