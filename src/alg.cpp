@@ -1,80 +1,114 @@
-// Copyright 2021 NNTU-CS
-int countPairs1(int *arr, int len, int value) {
-    int count = 0;
+// Copyright 2026 Student
 
-    for (int i = 0; i < len; i++) {
-        for (int j = i + 1; j < len; j++) {
+int countPairs1(int *arr, int len, int value) {
+    int total = 0;
+    for (int i = 0; i < len; ++i) {
+        for (int j = i + 1; j < len; ++j) {
             if (arr[i] + arr[j] == value) {
-                count++;
+                total += 1;
             }
         }
     }
-
-    return count;
+    return total;
 }
 
 int countPairs2(int *arr, int len, int value) {
-    int count = 0;
-    int left = 0;
-    int right = len - 1;
+    int total = 0;
+    int start = 0;
+    int end = len - 1;
 
-    while (left < right) {
-        int sum = arr[left] + arr[right];
-
+    while (start < end) {
+        int sum = arr[start] + arr[end];
         if (sum == value) {
-            if (arr[left] == arr[right]) {
-                int n = right - left + 1;
-                count += n * (n - 1) / 2;
+            if (arr[start] == arr[end]) {
+                int n = end - start + 1;
+                total += n * (n - 1) / 2;
                 break;
+            } else {
+                int leftVal = arr[start];
+                int rightVal = arr[end];
+                int leftCount = 0, rightCount = 0;
+
+                while (start <= end && arr[start] == leftVal) {
+                    leftCount++;
+                    start++;
+                }
+                while (start <= end && arr[end] == rightVal) {
+                    rightCount++;
+                    end--;
+                }
+                total += leftCount * rightCount;
             }
-
-            int lval = arr[left];
-            int rval = arr[right];
-
-            int lcount = 0;
-            int rcount = 0;
-
-            while (arr[left] == lval) {
-                lcount++;
-                left++;
-            }
-
-            while (arr[right] == rval) {
-                rcount++;
-                right--;
-            }
-
-            count += lcount * rcount;
         } else if (sum < value) {
-            left++;
+            start++;
         } else {
-            right--;
+            end--;
         }
     }
 
-    return count;
+    return total;
+}
+
+// Вспомогательные функции для бинарного поиска
+int findFirstOccurrence(int *arr, int left, int right, int target) {
+    int res = -1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) {
+            res = mid;
+            right = mid - 1;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return res;
+}
+
+int findLastOccurrence(int *arr, int left, int right, int target) {
+    int res = -1;
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+        if (arr[mid] == target) {
+            res = mid;
+            left = mid + 1;
+        } else if (arr[mid] < target) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+    return res;
 }
 
 int countPairs3(int *arr, int len, int value) {
-    int freq[101] = {0};
+    int total = 0;
+    int index = 0;
 
-    for (int i = 0; i < len; i++) {
-        freq[arr[i]]++;
-    }
+    while (index < len) {
+        int currentVal = arr[index];
+        int countCurrent = 1;
 
-    int count = 0;
-
-    for (int x = 0; x <= 50; x++) {
-        int y = value - x;
-
-        if (y < 0 || y > 100) continue;
-
-        if (x < y) {
-            count += freq[x] * freq[y];
-        } else if (x == y) {
-            count += freq[x] * (freq[x] - 1) / 2;
+        while (index + countCurrent < len && arr[index + countCurrent] == currentVal) {
+            countCurrent++;
         }
+
+        int target = value - currentVal;
+
+        if (target == currentVal) {
+            total += countCurrent * (countCurrent - 1) / 2;
+        } else if (target > currentVal) {
+            int first = findFirstOccurrence(arr, index + countCurrent, len - 1, target);
+            if (first != -1) {
+                int last = findLastOccurrence(arr, first, len - 1, target);
+                int countTarget = last - first + 1;
+                total += countCurrent * countTarget;
+            }
+        }
+
+        index += countCurrent;
     }
 
-    return count;
+    return total;
 }
