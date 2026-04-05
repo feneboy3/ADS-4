@@ -1,4 +1,4 @@
-// Copyright 2026 Student
+// Copyright 2021 NNTU-CS
 
 int countPairs1(int *arr, int len, int value) {
     int total = 0;
