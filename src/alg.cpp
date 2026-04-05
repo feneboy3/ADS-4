@@ -34,12 +34,12 @@ int countPairs2(int *arr, int len, int value) {
             int lcount = 0;
             int rcount = 0;
 
-            while (left < len && arr[left] == lval) {
+            while (arr[left] == lval) {
                 lcount++;
                 left++;
             }
 
-            while (right >= 0 && arr[right] == rval) {
+            while (arr[right] == rval) {
                 rcount++;
                 right--;
             }
@@ -55,45 +55,47 @@ int countPairs2(int *arr, int len, int value) {
     return count;
 }
 
+// бинарный поиск первого >= target
+int lowerBound(int *arr, int left, int right, int target) {
+    int res = right + 1;
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (arr[mid] >= target) {
+            res = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return res;
+}
+
+// бинарный поиск первого > target
+int upperBound(int *arr, int left, int right, int target) {
+    int res = right + 1;
+    while (left <= right) {
+        int mid = (left + right) / 2;
+        if (arr[mid] > target) {
+            res = mid;
+            right = mid - 1;
+        } else {
+            left = mid + 1;
+        }
+    }
+    return res;
+}
+
 int countPairs3(int *arr, int len, int value) {
     int count = 0;
 
     for (int i = 0; i < len; i++) {
         int target = value - arr[i];
 
-        int left = i + 1;
-        int right = len - 1;
-        int found = -1;
+        int l = lowerBound(arr, i + 1, len - 1, target);
+        int r = upperBound(arr, i + 1, len - 1, target);
 
-        while (left <= right) {
-            int mid = (left + right) / 2;
-
-            if (arr[mid] == target) {
-                found = mid;
-                break;
-            } else if (arr[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-
-        if (found != -1) {
-            int cnt = 1;
-
-            int l = found - 1;
-            while (l >= i + 1 && arr[l] == target) {
-                cnt++;
-                l--;
-            }
-
-            int r = found + 1;
-            while (r < len && arr[r] == target) {
-                cnt++;
-                r++;
-            }
-
-            count += cnt;
+        if (l < len && arr[l] == target) {
+            count += (r - l);
         }
     }
 
